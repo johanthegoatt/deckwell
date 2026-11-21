@@ -1,5 +1,7 @@
 # Deckwell
 
+[![test](https://github.com/johanthegoatt/deckwell/actions/workflows/test.yml/badge.svg)](https://github.com/johanthegoatt/deckwell/actions/workflows/test.yml)
+
 Put in your deck size and the board you've chosen, and Deckwell works out what to buy and how to lay it: the boards (with spares), the joists and their spacing, the screws, and the gaps that keep a timber deck from rotting or cupping. It draws the deck to scale so you can see the board rows and the joists underneath. Everything runs in your browser — nothing is uploaded.
 
 With **Dex the deck board**, who keeps an eye on the plan.
