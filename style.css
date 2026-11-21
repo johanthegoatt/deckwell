@@ -1,0 +1,107 @@
+/* Deckwell — warm timber look, readable in light and dark. All colours are
+   tokens on :root so dark mode is a single override. */
+:root {
+  --bg: #f6f1ea;
+  --panel: #fffdfa;
+  --ink: #241a10;
+  --muted: #6d5c47;
+  --line: #e4d8c8;
+  --accent: #8a5a2b;
+  --accent-ink: #fff;
+  --good: #2f6b36;
+  --warn: #9a5a12;
+  --board: #d9a86a;
+  --joist: #b98a52;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(60, 40, 15, .06), 0 8px 24px rgba(60, 40, 15, .06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171310;
+    --panel: #201a15;
+    --ink: #f1e7da;
+    --muted: #b2a08a;
+    --line: #342a21;
+    --accent: #d9a86a;
+    --accent-ink: #241a10;
+    --good: #7ec98a;
+    --warn: #e0a85c;
+    --board: #c08a4e;
+    --joist: #8a6638;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171310; --panel: #201a15; --ink: #f1e7da; --muted: #b2a08a; --line: #342a21;
+  --accent: #d9a86a; --accent-ink: #241a10; --good: #7ec98a; --warn: #e0a85c; --board: #c08a4e; --joist: #8a6638;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.top { max-width: 760px; margin: 0 auto; padding: 32px 16px 8px; }
+h1 { margin: 0 0 4px; font-size: 1.9rem; letter-spacing: -.02em; }
+.lede { margin: 0; color: var(--muted); max-width: 54ch; }
+
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+.panel {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px;
+}
+fieldset { border: 0; margin: 0 0 8px; padding: 0; }
+fieldset + fieldset { border-top: 1px solid var(--line); padding-top: 14px; margin-top: 6px; }
+legend { font-weight: 600; padding: 0; margin-bottom: 8px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: .86rem; color: var(--muted); }
+input, select {
+  font: inherit; padding: 9px 10px; border: 1px solid var(--line);
+  border-radius: 9px; background: var(--bg); color: var(--ink); min-width: 0;
+}
+input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.hint { font-size: .8rem; color: var(--muted); margin: 8px 0 0; }
+
+.out:empty { display: none; }
+.out { display: grid; gap: 14px; }
+.headline { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; }
+.big { font-size: 1.5rem; font-weight: 700; }
+.big span { color: var(--accent); }
+.sub { color: var(--muted); font-size: .9rem; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.card { border: 1px solid var(--line); border-radius: 11px; padding: 12px; background: var(--bg); }
+.card .n { font-size: 1.4rem; font-weight: 700; }
+.card .k { font-size: .8rem; color: var(--muted); }
+.card .x { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+
+.note { font-size: .86rem; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); }
+.note.good { border-color: color-mix(in srgb, var(--good) 40%, var(--line)); }
+.note.warn { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); }
+.note b { color: var(--ink); }
+ul.tips { margin: 2px 0 0; padding-left: 18px; color: var(--muted); font-size: .86rem; }
+ul.tips li { margin: 3px 0; }
+
+svg.plan { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+
+/* Dex the deck board */
+.dex-dock { position: fixed; right: 14px; bottom: 14px; display: flex; align-items: flex-end; gap: 8px; z-index: 20; }
+.dex-dock.tucked .dex-bubble, .dex-dock.tucked .dex-hide { display: none; }
+.dex { border: 0; background: transparent; cursor: pointer; padding: 0; line-height: 0; filter: drop-shadow(0 4px 8px rgba(60,40,15,.25)); }
+.dex .mouth { transition: d .2s; }
+.dex[data-mood="happy"] .mouth { d: path("M25 38 q7 6 14 0"); }
+.dex[data-mood="care"] .mouth { d: path("M26 41 q6 -3 12 0"); }
+.dex[data-mood="care"] .eye { r: 2.4; }
+.dex-bubble:empty { display: none; }
+.dex-bubble {
+  max-width: 240px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; padding: 9px 11px; font-size: .84rem; box-shadow: var(--shadow);
+}
+.dex-bubble.pop { animation: pop .18s ease-out; }
+@keyframes pop { from { transform: translateY(4px); opacity: .4; } to { transform: none; opacity: 1; } }
+.dex-hide { align-self: flex-start; border: 1px solid var(--line); background: var(--panel); color: var(--muted); border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 14px; line-height: 1; }
+
+.foot { max-width: 760px; margin: 8px auto 40px; padding: 0 16px; color: var(--muted); font-size: .8rem; }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

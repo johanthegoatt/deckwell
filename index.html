@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Deckwell — timber decking planner</title>
+<meta name="description" content="Put in your deck size and the board you've chosen and Deckwell works out the boards, the joists, the screws and the gaps to buy and lay a timber deck. Runs in your browser, nothing uploaded." />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%238a5a2b'/%3E%3Cg fill='%23d9a86a'%3E%3Crect x='6' y='7' width='20' height='3.4' rx='1'/%3E%3Crect x='6' y='12' width='20' height='3.4' rx='1'/%3E%3Crect x='6' y='17' width='20' height='3.4' rx='1'/%3E%3Crect x='6' y='22' width='20' height='3.4' rx='1'/%3E%3C/g%3E%3C/svg%3E" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="top">
+  <h1>Deckwell</h1>
+  <p class="lede">The boards, joists, screws and gaps to buy and lay a timber deck. Put in the deck size and your board, and it sizes the frame and the shopping list.</p>
+</header>
+
+<main class="wrap">
+  <form id="form" class="panel" autocomplete="off">
+    <fieldset>
+      <legend>The deck</legend>
+      <div class="grid">
+        <label>Width<input id="width" inputmode="decimal" placeholder="3.6" /></label>
+        <label>Length<input id="length" inputmode="decimal" placeholder="3.6" /></label>
+        <label>Measured in
+          <select id="unit"><option value="m" selected>metres</option><option value="ft">feet</option><option value="cm">cm</option></select>
+        </label>
+      </div>
+      <p class="hint">Width is across the boards; length is the way the boards run.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>The board</legend>
+      <div class="grid">
+        <label>Face width<input id="boardW" inputmode="decimal" placeholder="144" /></label>
+        <label>Board length<input id="boardLen" inputmode="decimal" placeholder="3600" /></label>
+        <label>Measured in
+          <select id="boardUnit"><option value="mm" selected>mm</option><option value="in">inches</option></select>
+        </label>
+        <label>Gap between boards (mm)<input id="gap" inputmode="decimal" placeholder="6" /></label>
+      </div>
+      <p class="hint">Softwood deck boards are usually 144 mm wide in 3.6 m lengths. The gap drains the deck and lets the wood move (TDCA: 5–8 mm).</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>How it's laid</legend>
+      <div class="grid">
+        <label>Lay
+          <select id="lay"><option value="square" selected>Square (straight)</option><option value="diagonal">Diagonal (45°)</option></select>
+        </label>
+        <label>Spare margin (%)<input id="extra" inputmode="decimal" placeholder="auto" /></label>
+      </div>
+      <p class="hint">A diagonal lay crosses the joists at an angle, so the joists come closer (300 mm) and more board is cut to waste.</p>
+    </fieldset>
+  </form>
+
+  <section id="out" class="panel out" aria-live="polite"></section>
+</main>
+
+<div id="dex-dock" class="dex-dock">
+  <button id="dex" class="dex" data-mood="calm" aria-describedby="dex-bubble" type="button" title="Dex the deck board">
+    <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+      <rect x="8" y="18" width="48" height="28" rx="6" fill="#c08a4e"/>
+      <rect x="8" y="18" width="48" height="28" rx="6" fill="none" stroke="#7a5329" stroke-width="2"/>
+      <path d="M14 22 q6 10 0 20 M24 22 q6 10 0 20 M34 22 q-5 10 0 20 M44 22 q6 10 0 20" stroke="#a9743c" stroke-width="1.4" fill="none" opacity="0.7"/>
+      <circle class="eye" cx="26" cy="32" r="3.2" fill="#2b1d10"/>
+      <circle class="eye" cx="40" cy="32" r="3.2" fill="#2b1d10"/>
+      <path class="mouth" d="M26 39 q6 4 12 0" stroke="#2b1d10" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <div id="dex-bubble" class="dex-bubble" role="status" aria-live="polite"></div>
+  <button id="dex-hide" class="dex-hide" type="button" aria-label="Hide Dex">×</button>
+</div>
+
+<footer class="foot">
+  <p>Planning figures to the TDCA (Timber Decking &amp; Cladding Association) builder's guidance. Check joist spans against C16 timber span tables and your local rules before you buy. Runs entirely in your browser.</p>
+</footer>
+
+<script src="src/core.js"></script>
+<script src="src/app.js"></script>
+<script src="src/dex.js"></script>
+</body>
+</html>
