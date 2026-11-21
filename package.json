@@ -1,0 +1,10 @@
+{
+  "name": "deckwell",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The boards, joists, screws and gaps to buy and lay a timber deck, from the deck size and your board. Runs in the browser, nothing uploaded. With Dex the deck board.",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
