@@ -5,7 +5,7 @@
   "use strict";
   var D = window.Deckwell;
   var $ = function (id) { return document.getElementById(id); };
-  var ids = ["width", "length", "unit", "boardW", "boardLen", "boardUnit", "gap", "lay", "extra"];
+  var ids = ["width", "length", "unit", "boardW", "boardLen", "boardUnit", "gap", "lay", "extra", "railM", "deckHeight", "postSpacing", "spindleW"];
   var el = {};
   ids.forEach(function (id) { el[id] = $(id); });
   var out = $("out");
@@ -64,6 +64,18 @@
     notes.push('<div class="note good"><b>Gaps:</b> leave ' + r.gapMm + ' mm between boards for drainage and movement, and ' + r.postGapMm + ' mm where a board end meets a post.</div>');
     notes.push('<div class="note warn"><b>Airflow:</b> the underside must breathe. Leave an open side for air in and the opposite side for air out, or the boards take up damp from below and cup.</div>');
 
+    if (r.rail) {
+      var rail = r.rail;
+      var cls = rail.required ? "warn" : "good";
+      var lead = rail.required
+        ? "<b>Guard required:</b> the deck sits " + rail.fallMm + " mm up, past the 600 mm line, so an open edge must be guarded."
+        : "<b>Guard optional:</b> the deck is " + rail.fallMm + " mm up, under the 600 mm line, so a rail is a choice not a rule.";
+      notes.push('<div class="note ' + cls + '">' + lead +
+        ' For ' + esc(s.railM) + ' m of railing: <b>' + rail.posts + ' posts</b>, <b>' + rail.spindles + ' spindles</b> (' +
+        rail.spindlesPerBay + ' a bay), gaps ' + rail.gapMm + ' mm so a 100 mm sphere can\'t pass. Barrier at least ' +
+        rail.heightMm + ' mm high (' + rail.balconyHeightMm + ' mm for a balcony). Approved Document K.</div>');
+    }
+
     out.innerHTML =
       '<div class="headline"><div class="big"><span>' + r.boards + '</span> boards</div>' +
       '<div class="sub">' + r.areaM2 + ' m² deck · ' + (r.lay === "diagonal" ? "diagonal 45° lay" : "square lay") + '</div></div>' +
@@ -82,7 +94,8 @@
     var r = D.plan({
       width: s.width, length: s.length, unit: s.unit,
       boardW: s.boardW, boardLen: s.boardLen, boardUnit: s.boardUnit,
-      gap: s.gap, lay: s.lay, extra: s.extra
+      gap: s.gap, lay: s.lay, extra: s.extra,
+      railM: s.railM, deckHeight: s.deckHeight, postSpacing: s.postSpacing, spindleW: s.spindleW
     });
     render(r, s);
     syncUrl(s);

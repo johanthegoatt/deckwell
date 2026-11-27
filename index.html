@@ -52,6 +52,17 @@
       </div>
       <p class="hint">A diagonal lay crosses the joists at an angle, so the joists come closer (300 mm) and more board is cut to waste.</p>
     </fieldset>
+
+    <fieldset>
+      <legend>Railing <span class="opt">(optional)</span></legend>
+      <div class="grid">
+        <label>Railed run (m)<input id="railM" inputmode="decimal" placeholder="3.6" /></label>
+        <label>Height above ground (m)<input id="deckHeight" inputmode="decimal" placeholder="0.7" /></label>
+        <label>Post spacing (mm)<input id="postSpacing" inputmode="decimal" placeholder="1800" /></label>
+        <label>Spindle width (mm)<input id="spindleW" inputmode="decimal" placeholder="45" /></label>
+      </div>
+      <p class="hint">Give the length of open edge you'll rail and how far the deck sits above the ground. Over 600 mm and a guard is required; Deckwell spaces the spindles so a 100 mm sphere can't pass (gaps 99 mm max, Approved Document K).</p>
+    </fieldset>
   </form>
 
   <section id="out" class="panel out" aria-live="polite"></section>
