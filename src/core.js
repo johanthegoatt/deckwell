@@ -94,6 +94,57 @@
     return Math.floor(spanMm / centresMm) + 1;
   }
 
+  // ------------------------------------------------------------- railing
+
+  // A deck more than 600 mm above the ground needs guarding along its open
+  // edges (Approved Document K). The barrier is at least 900 mm high for a
+  // domestic deck (1100 mm for a balcony or roof terrace), and the gaps
+  // between the spindles must be small enough that a 100 mm sphere can't pass,
+  // so 99 mm at most.
+  var GUARD = { triggerMm: 600, heightMm: 900, balconyHeightMm: 1100, maxGapMm: 99, spindleWmm: 45, postSpacingMm: 1800 };
+
+  // Spindles (balusters) along one run of railing. With n spindles there are
+  // n + 1 equal gaps, and every gap must stay at or under the 99 mm limit, so
+  // this solves for the fewest spindles that hold the gap under the cap and
+  // reports the gap they land on.
+  function spindlesForRun(runMm, spindleWmm, maxGapMm) {
+    if (!(runMm > 0)) return { spindles: 0, gapMm: 0 };
+    var n = Math.max(0, Math.ceil((runMm - maxGapMm) / (spindleWmm + maxGapMm) - 1e-9));
+    var gap = (runMm - n * spindleWmm) / (n + 1);
+    return { spindles: n, gapMm: gap };
+  }
+
+  // The guarding for a railed deck: whether it's needed at all (the fall past
+  // the 600 mm trigger), the posts along the run, and the spindles per bay and
+  // in total to keep every gap under the 99 mm sphere limit.
+  function railing(opts) {
+    opts = opts || {};
+    var runMm = opts.runMm;
+    if (!(runMm > 0)) return null;
+    var fallMm = isFinite(opts.deckHeightMm) ? opts.deckHeightMm : 0;
+    var sw = opts.spindleWmm > 0 ? opts.spindleWmm : GUARD.spindleWmm;
+    var spacing = opts.postSpacingMm > 0 ? opts.postSpacingMm : GUARD.postSpacingMm;
+
+    var bays = Math.max(1, Math.ceil(runMm / spacing - 1e-9));
+    var posts = bays + 1;
+    var bayMm = runMm / bays;
+    var per = spindlesForRun(bayMm, sw, GUARD.maxGapMm);
+
+    return {
+      required: fallMm > GUARD.triggerMm,
+      fallMm: Math.round(fallMm),
+      heightMm: GUARD.heightMm,
+      balconyHeightMm: GUARD.balconyHeightMm,
+      posts: posts,
+      bays: bays,
+      bayMm: round1(bayMm),
+      spindlesPerBay: per.spindles,
+      spindles: per.spindles * bays,
+      gapMm: round1(per.gapMm),
+      maxGapMm: GUARD.maxGapMm
+    };
+  }
+
   // ------------------------------------------------------------- main
 
   // Everything comes in as strings from the form. Returns null when the deck
@@ -142,7 +193,7 @@
     var lastRow = bw - (filled - W);           // width of the ripped last board
     var trimmed = lastRow > 0 && lastRow < bw - 0.5;
 
-    return {
+    var out = {
       unit: unit,
       areaM2: round2((W * L) / 1e6),
       lay: lay,
@@ -163,6 +214,20 @@
       jointed: perRow > 1,
       postGapMm: 5
     };
+
+    // Railing along an open edge, once a railed run length is given. The fall
+    // to the ground decides whether guarding is a requirement or a choice.
+    var railM = parseFloat(input.railM);
+    if (isFinite(railM) && railM > 0) {
+      out.rail = railing({
+        runMm: railM * 1000,
+        deckHeightMm: toMm(input.deckHeight, unit) || 0,
+        postSpacingMm: toMm(input.postSpacing, bunit),
+        spindleWmm: toMm(input.spindleW, bunit)
+      });
+    }
+
+    return out;
   }
 
   return {
@@ -171,8 +236,11 @@
     rowsAcross: rowsAcross,
     piecesPerRow: piecesPerRow,
     joistCount: joistCount,
+    spindlesForRun: spindlesForRun,
+    railing: railing,
     plan: plan,
     CENTRES: CENTRES,
-    LAY_WASTE: LAY_WASTE
+    LAY_WASTE: LAY_WASTE,
+    GUARD: GUARD
   };
 });

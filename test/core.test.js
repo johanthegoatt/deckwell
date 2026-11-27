@@ -91,3 +91,41 @@ test("plan: feet and inches convert the same as metric", () => {
   assert.strictEqual(m.rows, ft.rows);
   assert.strictEqual(m.joists, ft.joists);
 });
+
+test("spindlesForRun keeps every gap under the 99 mm sphere limit", () => {
+  const r = D.spindlesForRun(1800, 45, 99);
+  assert.strictEqual(r.spindles, 12);
+  assert.ok(r.gapMm <= 99, "the gap stays under the cap");
+  // one fewer spindle would open the gaps past 99 mm
+  const loose = (1800 - 11 * 45) / 12;
+  assert.ok(loose > 99, "11 spindles would be too few");
+});
+
+test("railing is required only once the fall passes 600 mm", () => {
+  assert.strictEqual(D.railing({ runMm: 3600, deckHeightMm: 700 }).required, true);
+  assert.strictEqual(D.railing({ runMm: 3600, deckHeightMm: 600 }).required, false);
+  assert.strictEqual(D.railing({ runMm: 3600, deckHeightMm: 500 }).required, false);
+});
+
+test("railing counts posts, bays and spindles across the run", () => {
+  const r = D.railing({ runMm: 3600, deckHeightMm: 700, postSpacingMm: 1800 });
+  assert.strictEqual(r.bays, 2);
+  assert.strictEqual(r.posts, 3);
+  assert.strictEqual(r.spindlesPerBay, 12);
+  assert.strictEqual(r.spindles, 24);
+  assert.strictEqual(r.heightMm, 900);
+});
+
+test("railing returns null without a run length", () => {
+  assert.strictEqual(D.railing({ runMm: 0, deckHeightMm: 700 }), null);
+  assert.strictEqual(D.railing({}), null);
+});
+
+test("plan folds in the railing when a railed run is given", () => {
+  const p = D.plan({ width: 3, length: 4, unit: "m", boardW: 144, boardLen: 3600, boardUnit: "mm", railM: 3.6, deckHeight: 0.7 });
+  assert.ok(p.rail, "rail block present");
+  assert.strictEqual(p.rail.required, true);
+  assert.ok(p.rail.gapMm <= 99);
+  const none = D.plan({ width: 3, length: 4, unit: "m", boardW: 144, boardLen: 3600, boardUnit: "mm" });
+  assert.strictEqual(none.rail, undefined);
+});
